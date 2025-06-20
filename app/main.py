@@ -6,18 +6,70 @@ import tempfile
 from app.file_utils import extract_text, SUPPORTED_EXTENSIONS
 from app.analyzer import analyze_contract
 
-# --- Custom CSS for minimalistic look ---
+# --- Custom CSS for premium mobile experience ---
 st.markdown(
     """
     <style>
-    .main { background-color: #f7f7f9; }
+    html, body, .main { background-color: #f7f7f9; }
     .st-bb { background: #fff !important; border-radius: 10px; }
-    .risk-badge { display: inline-block; padding: 0.2em 0.7em; border-radius: 1em; font-size: 0.9em; font-weight: 600; }
+    .risk-badge { display: inline-block; padding: 0.2em 0.7em; border-radius: 1em; font-size: 0.95em; font-weight: 600; }
     .risk-High { background: #ff4b4b; color: #fff; }
     .risk-Medium { background: #ffb300; color: #fff; }
     .risk-Low { background: #00b86b; color: #fff; }
     .risk-None { background: #bdbdbd; color: #fff; }
+    /* Responsive font and padding */
+    @media (max-width: 600px) {
+        .stApp { font-size: 1.08em; }
+        .stButton>button, .stFileUploader>div { font-size: 1.1em; padding: 0.8em 1.2em; }
+        .risk-badge { font-size: 1.1em; }
+        .st-expanderHeader { font-size: 1.08em; }
+        .footer-emblem { font-size: 1em !important; }
+    }
+    /* Floating Action Button (FAB) */
+    .fab-upload {
+        position: fixed;
+        bottom: 80px;
+        right: 24px;
+        z-index: 100;
+        background: #00b86b;
+        color: #fff;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        font-size: 2em;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .fab-upload:hover { background: #009e5c; }
+    /* Scroll to top button */
+    .scroll-top-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 24px;
+        z-index: 100;
+        background: #ffb300;
+        color: #fff;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5em;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        transition: background 0.2s;
+    }
+    .scroll-top-btn:hover { background: #ff9800; }
     </style>
+    <script>
+    // Scroll to top function for the button
+    function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+    </script>
     """,
     unsafe_allow_html=True,
 )
@@ -38,16 +90,30 @@ st.sidebar.info("Supported formats: PDF, DOCX, TXT. For best results, upload cle
 st.title(":scroll: Contract Clause Risk Analyzer")
 st.markdown("<br>", unsafe_allow_html=True)
 
+# --- Floating Action Button for Upload (simulated) ---
+st.markdown("""
+<div class='fab-upload' onclick="document.querySelector('input[type=file]').click()" title='Upload contract'>
+    <span>+</span>
+</div>
+""", unsafe_allow_html=True)
+
 uploaded_files = st.file_uploader(
     "Upload contract(s)",
     type=[ext[1:] for ext in SUPPORTED_EXTENSIONS],
     accept_multiple_files=True,
-    help="Drag and drop or click to select files. Max 10MB each."
+    help="Drag and drop or tap to select files. Max 10MB each."
 )
+
+# --- Scroll to Top Button ---
+st.markdown("""
+<div class='scroll-top-btn' onclick='scrollToTop()' title='Scroll to top'>
+    <span>&uarr;</span>
+</div>
+""", unsafe_allow_html=True)
 
 if uploaded_files:
     for uploaded_file in uploaded_files:
-        st.markdown(f"#### {uploaded_file.name}")
+        st.markdown(f"#### <span style='font-size:1.1em'><img src='https://img.icons8.com/ios-filled/24/000000/document.png' style='vertical-align:middle;margin-right:6px;'/> {uploaded_file.name}</span>", unsafe_allow_html=True)
         with st.spinner("Extracting text..."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp:
                 tmp.write(uploaded_file.read())
@@ -96,7 +162,7 @@ if uploaded_files:
 # --- Company Emblem/Footer ---
 st.markdown("""
 ---
-<div style='text-align: center; margin-top: 2em;'>
+<div class='footer-emblem' style='text-align: center; margin-top: 2em;'>
     <img src='https://img.icons8.com/ios-filled/50/000000/briefcase.png' width='32' style='vertical-align:middle; margin-right:8px;'>
     <span style='font-size: 1.1em; color: #888;'>©2025 Meja Tech Solutions</span>
 </div>
