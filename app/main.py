@@ -91,4 +91,13 @@ if uploaded_files:
             with st.expander(f"Clause {idx+1}"):
                 st.markdown(f"{badge} &nbsp; {r['clause']}", unsafe_allow_html=True)
                 if r["risk"] != "None":
-                    st.caption(f"Flagged keyword: {r['keyword']}") 
+                    st.caption(f"Flagged keyword: {r['keyword']}")
+
+# --- Company Emblem/Footer ---
+st.markdown("""
+---
+<div style='text-align: center; margin-top: 2em;'>
+    <img src='https://img.icons8.com/ios-filled/50/000000/briefcase.png' width='32' style='vertical-align:middle; margin-right:8px;'>
+    <span style='font-size: 1.1em; color: #888;'>©2025 Meja Tech Solutions</span>
+</div>
+""", unsafe_allow_html=True) 
